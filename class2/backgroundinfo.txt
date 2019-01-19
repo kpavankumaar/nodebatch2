@@ -1,0 +1,53 @@
+compiler : takes the source code and turn it into an excutable code 
+
+transpiler : takes source code and convert that into another source code 
+eg : LESS and SASS - > css 
+coffeescript -> javascript
+
+interpreters : take sourcecode and excute it by themselves 
+v8engine  : interperter 
+v8 compiles the code at runtime and make it faster 
+a. Javascript Core (ios- safari)
+b. spidermonkey (Firefox)
+c. Chakra (Internet explorer)
+
+NOde js is a serverside javascript runtime environmet
+Node is C++ application embeded with v8 Engine
+
+Node has two primary based programs . 
+both of these programs get called from command line.
+a. REPL 
+b. Script Processor 
+
+scriptprocessor : 
+    a. initialize process called as eventloop
+    b. process the initial parts of the javascript file 
+
+then start the processing of event loop that it has initialized earlier
+what is an event loop
+
+event loop is nothing but infinitely repeating task (it means that it starts over as soon as it just completes)
+
+scriptprocessor can handle code in two ways 
+a .synchronous behaviour, b. asynchronous behaviour
+synchronous behaviour code is invoked and are immediately completed 
+asynchronous behaviour are invoked and are not immediately completed , these behaviours are added to the event queue
+
+event loop is a way of the processing the todolist.
+with each tick of the loop it completes an item or several items on the list 
+
+items that are added to todolist
+items in todolist are ones which are not executed asyncronously
+eg: invoke a callback , timeouts 
+
+these are called as umbrella of tasks which are non blocking 
+
+
+
+
+
+
+
+
+
+
