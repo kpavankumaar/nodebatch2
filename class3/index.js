@@ -44,5 +44,4 @@ var server = http.createServer(function(req,res){
 
 // start the server
 server.listen(3000,function(){
-    console.log('the server is up and running now')
-});
+    console.log('the server is up and running now')});
