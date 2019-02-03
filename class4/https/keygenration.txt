@@ -1,1 +1,18 @@
 openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+
+req- activates the part of openssl that deals with certificate requesting signing
+newkey - generate  a new private key 
+new - generate new request 
+no des - means that we dont want the generated private key to be encrypted
+
+RSA is one of the first public key cryptosystems and it is widely used for secure data transimission
+RSA - 2048 this is key size 
+
+keyout key.pem - store the priave key in a file called as key.pem 
+
+-out cert.pem - store the certificate in a file called as cert.pem 
+rsa alogrithm is used to encrypt data and is decrypted on the recieving data 
+public key and private key , public key is given to users and private key is  kept secret
+
+the encrypted data from the user is prepared by public key and this encrypted data is decrypted by using the private key
+public key and piravte key can encrypt and decrypt data 
