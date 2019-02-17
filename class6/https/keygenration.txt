@@ -1,0 +1,45 @@
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+
+use the above statement in command prompt or terminal
+
+output in terminal -------------------
+Generating a 2048 bit RSA private key
+....+++
+............................+++
+writing new private key to 'key.pem'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:IN
+State or Province Name (full name) [Some-State]:Telangana
+Locality Name (eg, city) []:Hyderabad            
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:nbits
+Organizational Unit Name (eg, section) []:         
+Common Name (e.g. server FQDN or YOUR name) []:localhost 
+Email Address []:k.pavankumaar@gmail.com
+
+output end here -------------------
+
+
+
+req- activates the part of openssl that deals with certificate requesting signing
+newkey - generate  a new private key 
+new - generate new request 
+no des - means that we dont want the generated private key to be encrypted
+
+RSA is one of the first public key cryptosystems and it is widely used for secure data transimission
+RSA - 2048 this is key size 
+
+keyout key.pem - store the priave key in a file called as key.pem 
+
+-out cert.pem - store the certificate in a file called as cert.pem 
+rsa alogrithm is used to encrypt data and is decrypted on the recieving data 
+public key and private key , public key is given to users and private key is  kept secret
+
+the encrypted data from the user is prepared by public key and this encrypted data is decrypted by using the private key
+public key and piravte key can encrypt and decrypt data 
