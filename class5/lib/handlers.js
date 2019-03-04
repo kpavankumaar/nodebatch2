@@ -1,4 +1,5 @@
 
+var _data = require('./data');
 // Define all handlers 
 var handlers = {}
 
@@ -23,6 +24,11 @@ handlers._users = {}
 handlers._users.post = function(data,callback){
     // read the files inside the users folder
     // if data doesnot exist we create the file and store json data 
+    console.log('data.payload',typeof(data.payload));
+    
+    _data.create('users',9123456789,{name:'pavan'},function(err){
+        console.log('handlers create fn call response ', err);
+    })
     
 }
 //users - get 

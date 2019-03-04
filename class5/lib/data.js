@@ -5,18 +5,23 @@ var path = require('path');
 var lib = {};
 lib.baseDir = path.join(__dirname,'/../.data/')
 // write data to a file 
-lib.create = function(dir,file){
+lib.create = function(dir,file,data,callback){
  // open the file fs.open()
  // write the data into the file fs.writeFile()
     fs.open(lib.baseDir+dir+'/'+file+'.json','wx',function(err, fileDescriptor){
-        if(fileDescriptor){
-            fs.writeFile('fileDescriptor', 'datayouwanttowrite',function(err){
-                if(err){
-
+        if(!err && fileDescriptor){
+            var stringData = JSON.stringify(data);
+            fs.writeFile(fileDescriptor, stringData ,function(err){
+                console.log('error msg', err);
+                if(!err){
+                    fs.close(fileDescriptor,function(err){})
+                    // callback(false);
                 }else{
-                    // console.log(' closing new file ')
+                    console.log(' Error writing to the file ');
                 }
             })
+        }else{
+            callback('could not create new file , it may already exist');
         }
     })
 
@@ -41,3 +46,4 @@ lib.update = function(){
 lib.delete = function(){
     // deletefile fs.unlink()
 }
+module.exports = lib;
