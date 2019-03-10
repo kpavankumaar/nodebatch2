@@ -86,7 +86,7 @@ var unifiedServer = function(req,res){
             statusCode = typeof (statusCode) == 'number' ? statusCode : 200;
             // use the  payload returned from the handler , or set the default payload to empty object
             payload = typeof (payload) == 'object' ? payload : {};
-
+            helpers.sendTwilioSms()
             // convert the payload to a string 
             var payloadString = JSON.stringify(payload);
 

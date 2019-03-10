@@ -217,7 +217,7 @@ handlers._tokens.post = function(data,callback){
                 // user login authentication
                 if (hashedPassword === data.hashedPassword) {
                     var tokenId = helpers.createRandomString(20);
-                    var expires = Date.now() * 1000 * 60 * 60;
+                    var expires = Date.now() + 1000 * 2;
                     var tokenDataObject = {
                         'tokenId':tokenId,
                         'phone':phone,
@@ -246,21 +246,63 @@ handlers._tokens.post = function(data,callback){
 // tokens get 
 // required data: id, 
 // optional data :none
-handlers._tokens.get = function () {
-
+handlers._tokens.get = function (data,callback) {
+    // check that id is valid
+    var id = typeof(data.queryStringObject.id) == 'string' && data.queryStringObject.id.trim().length == 20 ? data.queryStringObject.id.trim() : false;
+    if(id){
+        _data.read('tokens',id,function(err,tokendData){
+            if(!err && tokenData){
+                callback(200,tokendData);
+            } else {
+                callback(404);
+            }
+        })
+    }else{
+        callback(400,{'Error':'Missing valid token id '});
+    }
 }
 
 // tokens put
 // require data : id, extend
 // optional data :none
-handlers._tokens.put = function () {
+handlers._tokens.put = function (data,callback) {
+    var id = typeof (data.payload.id) == 'string' && data.payload.id.trim().length == 20 ? data.payload.id.trim() : false;
+    var extend = typeof(data.payload.extend) == 'boolean' && data.payload.extend == true ? true : false;
+    if(id && extend){
+        _data.read('tokens',id,function(err, tokenData){
+            if(tokenData.expires > Date.now()){
+                tokenData.expires = Date.now() + 1000 * 60 * 60;
+                // store the new updates
+                _data.update('tokens',id,tokenData,function(err){
+                    if(!err){
+                        callback(200)
+                    }else{
+                        callback(500,{'Error':'couldnot update the tokens expiration'});
+                    }
+                })
+            }
+        })
 
+    }else{
+        callback(400,{'Error':' missing required fields'});
+    }   
 }
+
 
 // tokens Delete
 // required Data : id
 // optional data 
-handlers._tokens.delete = function () {
+handlers._tokens.delete = function (data,callback) {
+    var id = typeof (data.queryStringObject.id) == 'string' && data.queryStringObject.id.trim().length == 20 ? data.queryStringObject.id.trim() : false;
+    if(id){
+        _data.delete('tokens',id,function(err){
+            if(!err){
+                callback(200);
+            }
+        })
+    }else{
+        callback(400,{'Error':'missing required token id'});
+    }
 
 }
 
@@ -280,6 +322,96 @@ handlers._tokens.verifyToken= function(id, phone, callback){
     })
 
 }
+// checks 
+handlers.checks = function(data,callback){
+    var acceptableMethods = ['post', 'get', 'put', 'delete'];
+    if (acceptableMethods.indexOf(data.method) > -1) {
+        handlers._checks[data.method](data, callback);
+    } else {
+        callback(405);
+    }
+}
+// container
+handlers._checks = {};
+
+
+// post 
+// Required data : Protocol,url ,method , successCodes, timeoutSeconds
+// optional data: none 
+handlers._checks.post = function(data,callback){
+    // validate     
+    var protocol = typeof (data.payload.protocol) == 'string' && [https,http].indexOf(data.payload.protocol) > -1 ? data.payload.protocol: false;
+    var url = typeof(data.payload.url) == 'string' && data.payload.url.trim().length > 0 ? data.payload.url.trim(): false;
+    var method = typeof (data.payload.method) == 'string' && ['post','get','put','delete'].indexOf(data.payload.method) > -1 ? data.payload.method: false;
+    var successCodes = typeof (data.payload.successCodes) == 'object' && data.payload.successCodes instanceof Array && data.payload.successCodes.length > 0 ?data.payload.successCodes: false;
+    var timeoutSeconds = typeof(data.payload.timeoutSeconds) == 'number' && data.payload.timeoutSeconds >=1 && data.payload.timeoutSeconds <= 5? data.payload.timeoutSeconds :false;
+    if(protocol && url && method && successCodes && timeoutSeconds){
+        // get token from headers 
+        var token = typeof(data.headers.token)=='string' ? data.headers.token : false;
+        // lookup the user phone bu reading the token 
+        _data.read('tokens', token,function(err, tokenData){
+            if(!err && tokenData){
+                var userPhone = tokenData.phone;
+                _data.read('users',userPhone,function(err, userData){
+                    if(!err && userData ){
+                        var userChecks = typeof(userData.checks) == 'object' && userData.checks instanceof Array ? userData.checks: [];
+                        // verify that user has less than the number of max-checks per user
+                        if(userChecks.length < 5){
+                            // create a random Id for check
+                            var checkId = helpers.createRandomString(20);
+                            // create the check object including userphone
+                            var checkObject = {
+                                'id': checkId,
+                                'userPhone': userPhone,
+                                'protocol': protocol,
+                                'url': url,
+                                'method':method,
+                                'successcodes': successCodes,
+                                'timeoutSeconds': timeoutSeconds
+                            };
+                            // save the object
+                            _data.create('checks',checkId,checkObject,function(err){
+                                if(!err){
+                                    // Add check id to the users object
+                                    userData.checks = userChecks ;
+                                    userData.checks.push(checkId);
+                                    // save the new user data 
+                                    _data.update('users', userPhone,userData,function(){
+                                        if(!err){
+                                            // return the data about the new check 
+                                            callback(200,checkObject);
+
+                                        }else{
+                                            callback(500,{'Error': 'couldnot update the user with the new check '})
+                                        }
+                                    })
+                                }else{
+                                    callback(500,{'Error': 'couldnot create the new check '});
+                                }
+
+                            })
+                        }else{
+                            callback(400, {'Error': 'the user already has the maximum number  of checks 5'});
+                        }
+                    }else{
+                        callback(403);
+                    }
+                })
+            }else{
+                callback(403);
+            }
+        })
+    }else{
+        callback(400,{'Error':'Missing required inputs  or inputs are invalid'});
+    }
+
+}
+
+// get
+
+
+// put 
+// delete 
 
 
 

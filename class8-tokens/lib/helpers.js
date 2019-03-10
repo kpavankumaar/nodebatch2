@@ -2,6 +2,9 @@
 // dependencies 
 var crypto = require('crypto');
 var config = require('./config')
+var twilio = require('twilio');
+var https = require('https');
+var queryString = require('querystring');
 // container for the helpers 
 
 var helpers = {};
@@ -39,6 +42,33 @@ helpers.createRandomString = function(strLength){
 
     }else{
         return false;
+    }
+}
+helpers.sendTwilioSms = function(phone,msg,callback){
+    // var accountSid = 'ACed885cecb0a4e9cd104e19070e90a3be'; // Your Account SID from www.twilio.com/console
+    // var authToken = '82576f7304a9d1103f5751080ff9d831';   // Your Auth Token from www.twilio.com/console
+
+    // var twilio = require('twilio');
+    // var client = new twilio(accountSid, authToken);
+    // console.log('***********Message Id from twilio **********************', 'test msg from twilio');
+    // client.messages.create({
+    //     body: 'Hello from Node',
+    //     to: '+12345678901',  // Text this number
+    //     from: '+12345678901' // From a valid Twilio number
+    // })
+    //     .then((message) => console.log('***********Message Id from twilio **********************',message.sid));
+    var payload = {
+        'From': '+12345678901',
+        'To': '12345678901',
+        'Body': 'Hello from node'
+    }
+    var stringPayload = queryString.stringify(payload);
+    // configure the requests 
+    var requestDetails = {
+        'protocol': 'https',
+        'hostname': 'api.twillio.com',
+        'method': 'post',
+        'path': '/'
     }
 }
 
