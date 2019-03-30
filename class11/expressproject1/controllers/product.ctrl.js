@@ -1,3 +1,4 @@
+
 var products = [
     { id: 1, brand: 'nokia', model: 'x6', price: 300, inStock: true },
     { id: 2, brand: 'sony', model: 'Erricson', price: 800, inStock: true },
@@ -55,6 +56,9 @@ var productCtrl = {
             }
 
         }
+    },
+    patch:function(req,res){
+
     }
 }
 module.exports = productCtrl;

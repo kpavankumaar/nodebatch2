@@ -6,9 +6,10 @@ var bodyParser = require('body-parser');
 var defaultRouter = require('./routes/default.router');
 var productRouter = require('./routes/product.router');
 
+
 app.use(bodyParser.json());
 app.use('/',defaultRouter);
-app.use('/',productRouter);
+app.use('/api/products',productRouter);
 // app.get('/',defaultCtrl.get);
 // app.get('/products',productCtrl.get);
 app.listen(3000,function(){
