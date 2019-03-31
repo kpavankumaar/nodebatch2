@@ -2,17 +2,15 @@
 const Product = require('../models/product.model')
 var productCtrl = {
     get: function (req, res) {
-        Product.find()
-        .exec()
-        .then(function(product){
-            res.status(200);
-            res.json(product);
+        Product.find(function (err, product) {
+            if (!err) {
+                res.status(200)
+                res.json(product)
+            } else {
+                res.status(400);
+                res.send();
+            }
         })
-        .catch(function(err){
-            res.status(400);
-            res.send();
-        })
-        
     },
     getById: function(req,res){
         console.log(req.params);
@@ -31,15 +29,17 @@ var productCtrl = {
     save:function(req,res){
         
         var product = new Product(req.body)
-        product.save()
-        .then(function (savedProduct){
+        product.save(function(err, savedProduct){
+            if (!err) {
                 res.status(201);
                 res.send(savedProduct);
+            }else{
+                res.status(500);
+                res.send('Internal se')
+            }
         })
-        .catch(function(err){
-            res.status(err);
-            res.send("internal server error ");
-        })
+        
+        
     },
     delete: function(req,res){
         var id = req.params.id;
@@ -93,7 +93,7 @@ var productCtrl = {
                 })
             }else{
                 res.status(400);
-                res.send('document not found');
+                res.send('document not found')
             }
         })
     }
