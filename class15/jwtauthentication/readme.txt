@@ -71,3 +71,18 @@ db.products.findOne({brand:'samsung'},{_id:0, model:1})
 // operators 
 
 $gte ,$gt, $lt, $lte, 
+
+
+// hashing the password 
+npm i bcrypt 
+bcrypt.hashSync(req.body.password,2);
+
+for authentication purpose 
+bcrypt.compareSync(req.body.password, hashedPassswordFromDB)
+
+once Authentication is complete 
+then we have to create token 
+
+installing the webtoken 
+npm install jsonwebtoken
+
